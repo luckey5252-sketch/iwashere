@@ -1,0 +1,24 @@
+import { describe, it, expect, afterEach } from 'vitest'
+import { serviceClient, createTestUser, cleanup } from '../helpers/supabase'
+
+afterEach(cleanup)
+
+describe('post_photos', () => {
+  it('attaches a photo to a post', async () => {
+    const { id: uid } = await createTestUser()
+    const db = serviceClient()
+    await db.from('profiles').insert({ id: uid, nickname: 'u' })
+    const { data: place } = await db.from('places')
+      .insert({ name: 'P', lat: 1, lng: 1, created_by: uid }).select('id').single()
+    const { data: post } = await db.from('posts')
+      .insert({ place_id: place!.id, author_id: uid, body: 'hi' }).select('id').single()
+
+    const { error } = await db.from('post_photos').insert({
+      post_id: post!.id, storage_path: 'photos/x.jpg', width: 800, height: 600,
+    })
+    expect(error).toBeNull()
+    const { data } = await db.from('post_photos').select('*').eq('post_id', post!.id)
+    expect(data!.length).toBe(1)
+    expect(data![0].width).toBe(800)
+  })
+})
