@@ -29,6 +29,8 @@ export async function createTestUser(): Promise<{ id: string; client: SupabaseCl
   const client = createClient(URL, ANON, { auth: { persistSession: false } })
   const { error: signInErr } = await client.auth.signInWithPassword({ email, password })
   if (signInErr) throw signInErr
+  // on_auth_user_created 트리거가 이 시점에 public.profiles 행을 이미 생성했다.
+  // 따라서 호출부는 profiles를 수동 insert하면 안 된다(PK 충돌).
   return { id: data.user!.id, client }
 }
 
@@ -41,7 +43,7 @@ export async function cleanup() {
   // auth 유저도 정리
   const { data } = await admin.auth.admin.listUsers({ perPage: 1000 })
   for (const u of data?.users ?? []) {
-    if (u.email?.startsWith('t') && u.email?.includes('@example.com')) {
+    if ((u.email?.startsWith('t') || u.email?.startsWith('sig')) && u.email?.includes('@example.com')) {
       await admin.auth.admin.deleteUser(u.id)
     }
   }

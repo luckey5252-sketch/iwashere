@@ -6,7 +6,6 @@ afterEach(cleanup)
 async function seedPlace() {
   const { id: uid } = await createTestUser()
   const db = serviceClient()
-  await db.from('profiles').insert({ id: uid, nickname: 'u' })
   const { data } = await db.from('places')
     .insert({ name: 'P', lat: 37.5, lng: 127, created_by: uid })
     .select('id').single()

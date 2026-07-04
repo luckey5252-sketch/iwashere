@@ -7,7 +7,6 @@ describe('places', () => {
   it('inserts a place and auto-fills geog from lat/lng', async () => {
     const { id: uid } = await createTestUser()
     const db = serviceClient()
-    await db.from('profiles').insert({ id: uid, nickname: 'u' })
 
     const { data, error } = await db
       .from('places')

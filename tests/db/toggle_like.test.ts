@@ -7,7 +7,6 @@ describe('toggle_like', () => {
   it('toggles like state for the calling user', async () => {
     const { id: uid, client } = await createTestUser()
     const admin = serviceClient()
-    await admin.from('profiles').insert({ id: uid, nickname: 'u' })
     const { data: place } = await admin.from('places')
       .insert({ name: 'P', lat: 1, lng: 1, created_by: uid }).select('id').single()
     const { data: post } = await admin.from('posts')

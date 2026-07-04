@@ -6,7 +6,6 @@ afterEach(cleanup)
 async function seedPlaces() {
   const { id: uid } = await createTestUser()
   const db = serviceClient()
-  await db.from('profiles').insert({ id: uid, nickname: 'u' })
   // 서울 시청 근처 두 곳 + 멀리 떨어진 한 곳(부산)
   await db.from('places').insert([
     { name: 'CityHall', lat: 37.5665, lng: 126.9780, created_by: uid },

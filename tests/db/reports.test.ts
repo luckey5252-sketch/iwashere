@@ -7,7 +7,6 @@ describe('reports', () => {
   it('files a report with default open status', async () => {
     const { id: uid } = await createTestUser()
     const db = serviceClient()
-    await db.from('profiles').insert({ id: uid, nickname: 'u' })
     const { data: place } = await db.from('places')
       .insert({ name: 'P', lat: 1, lng: 1, created_by: uid }).select('id').single()
     const { data: post } = await db.from('posts')
