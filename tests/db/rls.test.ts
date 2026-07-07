@@ -7,7 +7,6 @@ describe('RLS', () => {
   it('blocks anonymous inserts but allows public reads', async () => {
     const { id: uid } = await createTestUser()
     const admin = serviceClient()
-    await admin.from('profiles').insert({ id: uid, nickname: 'u' })
     const { data: place } = await admin.from('places')
       .insert({ name: 'P', lat: 1, lng: 1, created_by: uid }).select('id').single()
     await admin.from('posts').insert({ place_id: place!.id, author_id: uid, body: 'visible' })
@@ -25,7 +24,6 @@ describe('RLS', () => {
     const admin = serviceClient()
     const owner = await createTestUser()
     const attacker = await createTestUser()
-    await admin.from('profiles').insert([{ id: owner.id, nickname: 'o' }, { id: attacker.id, nickname: 'a' }])
     const { data: place } = await admin.from('places')
       .insert({ name: 'P', lat: 1, lng: 1, created_by: owner.id }).select('id').single()
     const { data: post } = await admin.from('posts')
@@ -41,7 +39,6 @@ describe('RLS', () => {
   it('hides is_hidden posts from other users', async () => {
     const admin = serviceClient()
     const { id: uid } = await createTestUser()
-    await admin.from('profiles').insert({ id: uid, nickname: 'u' })
     const { data: place } = await admin.from('places')
       .insert({ name: 'P', lat: 1, lng: 1, created_by: uid }).select('id').single()
     await admin.from('posts').insert({ place_id: place!.id, author_id: uid, body: 'secret', is_hidden: true })

@@ -7,7 +7,6 @@ describe('search_places', () => {
   it('returns places whose posts match the keyword', async () => {
     const { id: uid } = await createTestUser()
     const db = serviceClient()
-    await db.from('profiles').insert({ id: uid, nickname: 'u' })
     const { data: a } = await db.from('places')
       .insert({ name: 'Ramen A', lat: 37.5, lng: 127.0, created_by: uid }).select('id').single()
     const { data: b } = await db.from('places')
